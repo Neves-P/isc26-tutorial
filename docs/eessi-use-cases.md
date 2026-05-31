@@ -10,6 +10,8 @@ EESSI enables a variety of use cases, including:
 
 These use cases are discussed in details in our open-access paper, available via <https://doi.org/10.1002/spe.3075>.
 
+## What will we cover in the rest of this tutorial
+
 In the rest of this tutorial we will explore aspects of these use cases:
 
 * Using EESSI as base layer for software, and installing additional software on top of EESSI using `EESSI-extend`

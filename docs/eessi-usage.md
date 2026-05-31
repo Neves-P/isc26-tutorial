@@ -96,7 +96,7 @@ cd eessi-demo
 
 The contents of the directory should be something like this:
 
-``` { .bash .no-copy }
+``` { .output .no-copy }
 $ ls -l
 drwxr-xr-x 2 example users  4096 May  5 15:13 Bioconductor
 drwxr-xr-x 2 example users  4096 May  5 15:13 ESPResSo
