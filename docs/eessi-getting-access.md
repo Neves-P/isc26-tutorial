@@ -6,13 +6,13 @@ of the EESSI repository.
 ## Is EESSI accessible?
 
 EESSI can be accessed via [a native (CernVM-FS) installation](#native-installation),
-or via [a container that includes CernVM-FS](#eessi-container).
+or via [a container that includes CernVM-FS](#eessi-via-a-container).
 
 Before you look into these options, check if EESSI is already accessible on your system.
 
 Run the following command:
 ``` { .bash .copy }
-ls /cvmfs/pilot.eessi-hpc.org
+ls /cvmfs/software.eessi.io
 ```
 
 !!! note
@@ -22,26 +22,26 @@ ls /cvmfs/pilot.eessi-hpc.org
 
 If you see output like shown below, **you already have access to EESSI on your system**. :tada:
 ```
-host_injections  latest  versions
+README.eessi  defaults  host_injections  init  versions
 ```
 
 For starting to use EESSI, continue reading about
-[Setting up environment](eessi-usage.md#setting-up-environment).
+[Setting up environment](eessi-usage.md#setting-up-your-environment).
 
 If you see an error message as shown below, **EESSI is not yet accessible on your
 system**.
 ```
-ls: /cvmfs/pilot.eessi-hpc.org: No such file or directory
+ls: /cvmfs/software.eessi.io: No such file or directory
 ```
 No worries, you don't need to be a :mage: to get access to EESSI.
 
 Continue reading about the [Native installation](#native-installation) of EESSI,
-or access via the [EESSI container](#eessi-container).
+or accessing [EESSI via a container](#eessi-via-a-container).
 
 ## Native installation
 
 Setting up native access to EESSI, that is a system-wide deployment that does not require workarounds like
-[using a container](../eessi_container), requires the installation and configuration of [CernVM-FS](https://cernvm.cern.ch/fs).
+[using a container](#eessi-via-a-container), requires the installation and configuration of [CernVM-FS](https://cernvm.cern.ch/fs).
 
 This requires **admin privileges**, since you need to install CernVM-FS as an OS package.
 
@@ -63,15 +63,13 @@ The good news is that all of this only requires a handful commands :astonished: 
     # Installation commands for RHEL-based distros like CentOS, Rocky Linux, Almalinux, Fedora, ...
 
     # install CernVM-FS
-    sudo yum install -y https://ecsft.cern.ch/dist/cvmfs/cvmfs-release/cvmfs-release-latest.noarch.rpm
+    sudo yum install -y https://cvmrepo.s3.cern.ch/cvmrepo/yum/cvmfs-release-latest.noarch.rpm
     sudo yum install -y cvmfs
-
-    # install EESSI configuration for CernVM-FS
-    sudo yum install -y https://github.com/EESSI/filesystem-layer/releases/download/latest/cvmfs-config-eessi-latest.noarch.rpm
 
     # create client configuration file for CernVM-FS (no squid proxy, 10GB local CernVM-FS client cache)
     sudo bash -c "echo 'CVMFS_CLIENT_PROFILE="single"' > /etc/cvmfs/default.local"
     sudo bash -c "echo 'CVMFS_QUOTA_LIMIT=10000' >> /etc/cvmfs/default.local"
+    sudo bash -c "echo 'CVMFS_USE_CDN=yes' >> /etc/cvmfs/default.local"
 
     # make sure that EESSI CernVM-FS repository is accessible
     sudo cvmfs_config setup
@@ -83,20 +81,18 @@ The good news is that all of this only requires a handful commands :astonished: 
     # Installation commands for Debian-based distros like Ubuntu, ...
 
     # install CernVM-FS
-    sudo apt-get install lsb-release
-    wget https://ecsft.cern.ch/dist/cvmfs/cvmfs-release/cvmfs-release-latest_all.deb
+    sudo apt-get update
+    sudo apt-get install -y lsb-release wget
+    wget https://cvmrepo.s3.cern.ch/cvmrepo/apt/cvmfs-release-latest_all.deb
     sudo dpkg -i cvmfs-release-latest_all.deb
     rm -f cvmfs-release-latest_all.deb
     sudo apt-get update
     sudo apt-get install -y cvmfs
 
-    # install EESSI configuration for CernVM-FS
-    wget https://github.com/EESSI/filesystem-layer/releases/download/latest/cvmfs-config-eessi_latest_all.deb
-    sudo dpkg -i cvmfs-config-eessi_latest_all.deb
-
     # create client configuration file for CernVM-FS (no squid proxy, 10GB local CernVM-FS client cache)
-    sudo bash -c "echo 'CVMFS_CLIENT_PROFILE="single"' > /etc/cvmfs/default.local"
+    sudo bash -c "echo 'CVMFS_CLIENT_PROFILE=single' > /etc/cvmfs/default.local"
     sudo bash -c "echo 'CVMFS_QUOTA_LIMIT=10000' >> /etc/cvmfs/default.local"
+    sudo bash -c "echo 'CVMFS_USE_CDN=yes' >> /etc/cvmfs/default.local"
 
     # make sure that EESSI CernVM-FS repository is accessible
     sudo cvmfs_config setup
@@ -114,38 +110,32 @@ The good news is that all of this only requires a handful commands :astonished: 
     For more details on this, please refer to the
     [*Stratum 1 and proxies section* of the CernVM-FS tutorial](https://cvmfs-contrib.github.io/cvmfs-tutorial-2021/03_stratum1_proxies/).
 
-## EESSI client container
+## EESSI via a container
 
-The `eessi_container.sh` script provides a very easy yet versatile means
-to access EESSI.
+!!! warning "Prerequisite"
 
-This page guides you through several example scenarios
-illustrating the use of the script.
-
-### Prerequisites
-
-- Apptainer 1.0.0 (_or newer_), or Singularity 3.7.x
+    Apptainer 1.0.0 (_or newer_), or Singularity 3.7.x
+    
     - Check with `apptainer --version` or `singularity --version`
     - Support for the `--fusemount` option in the ``shell`` and ``run`` subcommands is required
-- Git
-    - Check with `git --version`
 
-### Preparation
+A small script can provide a very easy yet versatile means
+to access EESSI using a container.
 
-Clone the [`EESSI/software-layer`](https://github.com/EESSI/software-layer.git)
-repository and change into the `software-layer` directory by running these commands:
-
-``` { .bash .copy }
-git clone https://github.com/EESSI/software-layer.git
-cd software-layer
+```bash title="eessi-via-container.sh"
+--8<-- "scripts/eessi-via-container.sh"
 ```
+
+This page guides you through an example scenario
+illustrating the use of the script.
+
 
 ### Quickstart
 
-Run the `eessi_container` script (from the ``software-layer`` directory) to start a shell session in the EESSI container:
+Run the `eessi_via_container.sh` script to start a shell session in the container with EESSI available:
 
 ``` { .bash .copy }
-./eessi_container.sh
+./eessi_via_container.sh
 ```
 
 !!! Note
@@ -153,14 +143,23 @@ Run the `eessi_container` script (from the ``software-layer`` directory) to star
 
 You should see output like
 ```
-Using /tmp/eessi.abc123defg as tmp storage (add '--resume /tmp/eessi.abc123defg' to resume where this session ended).
-Pulling container image from docker://ghcr.io/eessi/build-node:debian11 to /tmp/eessi.abc123defg/ghcr.io_eessi_build_node_debian11.sif
-Launching container with command (next line):
-singularity -q shell --fusemount container:cvmfs2 pilot.eessi-hpc.org /cvmfs/pilot.eessi-hpc.org /tmp/eessi.abc123defg/ghcr.io_eessi_build_node_debian11.sif
+INFO:    Environment variable SINGULARITY_BIND is set, but APPTAINER_BIND is preferred
+INFO:    Environment variable SINGULARITY_HOME is set, but APPTAINER_HOME is preferred
+INFO:    Converting OCI blobs to SIF format
+INFO:    Starting build...
+INFO:    Fetching OCI image...
+161.9KiB / 161.9KiB [===============================================================================] 100 % 3.1 MiB/s 0s
+41.2MiB / 41.2MiB [=================================================================================] 100 % 3.1 MiB/s 0s
+5.2MiB / 5.2MiB [===================================================================================] 100 % 3.1 MiB/s 0s
+68.8MiB / 68.8MiB [=================================================================================] 100 % 3.1 MiB/s 0s
+117.8MiB / 117.8MiB [===============================================================================] 100 % 3.1 MiB/s 0s
+88.4MiB / 88.4MiB [=================================================================================] 100 % 3.1 MiB/s 0s
+INFO:    Extracting OCI image...
+2026/05/31 08:50:54  warn rootless{usr/libexec/openssh/ssh-keysign} ignoring (usually) harmless EPERM on setxattr "user.rootlesscontainers"
+INFO:    Inserting Apptainer configuration...
+INFO:    Creating SIF file...
+[=============================================================================================================] 100 % 0s
 CernVM-FS: pre-mounted on file descriptor 3
-Apptainer> CernVM-FS: loading Fuse module... done
-fuse: failed to clone device fd: Inappropriate ioctl for device
-fuse: trying to continue without -o clone_fd.
 
 Apptainer>
 ```
@@ -169,19 +168,14 @@ Apptainer>
     beginning with `CernVM-FS: ` have been printed after the first prompt
     `Apptainer> ` was shown.
 
-In this environment, you should be able to access the EESSI pilot repository:
+In this environment, you should be able to access the EESSI `software.eessi.io` repository:
 
 ``` { .bash .copy }
-ls /cvmfs/pilot.eessi-hpc.org
+ls /cvmfs/software.eessi.io
 ```
-
-More information on using the `eessi_container` script is available in the [EESSI documentation](https://eessi.github.io/docs/getting_access/eessi_container/).
-
 
 ---
 
 To start using EESSI, see [Using EESSI](eessi-usage.md).
-
-
 
 [*next: Using EESSI*](eessi-usage.md) - [*(back to overview page)*](index.md)
