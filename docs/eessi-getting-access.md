@@ -178,4 +178,4 @@ ls /cvmfs/software.eessi.io
 
 To start using EESSI, see [Using EESSI](eessi-usage.md).
 
-[*next: Using EESSI*](eessi-usage.md) - [*(back to overview page)*](index.md)
+[*(back to overview page)*](index.md)

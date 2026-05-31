@@ -129,4 +129,4 @@ and hence the [MultiXscale](https://www.multixscale.eu/) EuroHPC Centre-of-Excel
 project (2023-2026) that is a collaboration between EESSI and [CECAM](https://www.cecam.org/), with goals
 that include making EESSI ready for production, and supporting community contributions.
 
-[*next: Getting access to EESSI*](eessi-getting-access.md) - [*(back to overview page)*](index.md)
+[*(back to overview page)*](index.md)

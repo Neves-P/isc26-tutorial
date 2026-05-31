@@ -149,4 +149,4 @@ starting mdrun 'Protein'
 1000 steps,      2.5 ps.
 ```
 
-[*next: Use Cases for EESSI*](eessi-use-cases.md) - [*(back to overview page)*](index.md)
+[*(back to overview page)*](index.md)
