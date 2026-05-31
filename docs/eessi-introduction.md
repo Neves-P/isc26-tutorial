@@ -1,6 +1,6 @@
 # Introduction to EESSI
 
-<p align="center"><a href="https://eessi.github.io/docs"><img src="img/EESSI_logo_horizontal_transparant.png" alt="EESSI logo" width="600px"/></a></p>
+<p align="center"><a href="https://eessi.github.io/docs"><img src="img/EESSI_logo_horizontal_transparant.png" alt="EESSI logo" width="450px"/></a></p>
 
 ## What is EESSI?
 
