@@ -49,12 +49,12 @@ which will open a new
 webpage from GitHub from which you can select where you would like to create the project. You can also get to this
 page through the GitHub interface:
 
-<p align="center"><img src="img/GitHubTemplate.png" alt="EESSI filesystem layer" width="600px"/></p>
+<p align="center"><img src="img/GitHubTemplate.png" alt="EESSI CI/CD demo template repository" width="600px"/></p>
 
 Once GitHub has created a project for you from the template, you can _clone_ the project to the local resource that
 you wish to use (your laptop, a cluster,...) by copying the relevant command from the GitHub interface:
 
-<p align="center"><img src="img/GitHubRepo.png" alt="EESSI filesystem layer" width="600px"/></p>
+<p align="center"><img src="img/GitHubRepo.png" alt="Cloning our GitHub repository" width="600px"/></p>
 
 For example, for the repository shown in the image, the full command is 
 ``` { .bash .no-copy}
@@ -104,7 +104,7 @@ Some characteristics of the project are
     - The project uses a build tool called [`CMake`](https://cmake.org/) for building. Many software projects use this tool to help with
       the logistical challenge of building complex software.
     - This introduces another dependency on `CMake` itself which we only require during the building of the project.
-      Such dependencies are often called _buildtime dependencies_.
+      Such dependencies are often called _build-time dependencies_.
 - Testing
    - `CMake` has some features that allow for the running of tests that are included in our software project. This
      gives us an easy way to check both that our software runs, and that it gives correct results, without us needing
@@ -175,7 +175,7 @@ Currently Loaded Modules:
 That's now a long of packages which make up the _runtime dependency tree_ of `HDF5`. That dependency tree includes
 `OpenMPI/5.0.8-GCC-14.3.0` which means the list already satisfies the runtime requirements for our software package.
 
-However, we are still missing our _build time dependency_ `CMake`. Can EESSI also provide that? Let's check with
+However, we are still missing our _build-time dependency_ `CMake`. Can EESSI also provide that? Let's check with
 ``` { .bash .copy}
 module spider cmake
 ```
@@ -217,7 +217,7 @@ We don't have any reason to choose one over the other, so let's go with the most
 module load CMake/4.0.3-GCCcore-14.3.0
 ```
 
-With this module loaded, we now have all both our buildtime and runtime dependencies satisfied, and can proceed to
+With this module loaded, we now have all both our build-time and runtime dependencies satisfied, and can proceed to
 build our project.
 
 ### First attempt at building and testing our project
@@ -352,12 +352,82 @@ Our output is full of errors like
 ```
 What went wrong?
 
-### Why did our build fail the tests?
+## Why did our build fail the tests when using EESSI?
 
 To understand where the failure is coming from, we first need to understand what actually happens when we try to run a
-program on a computer.
+program on a computer. Our applications that we want to run take up space in memory, but many of them share parts of
+their dependency tree. For example, every application built with the `GCC` compiler, require the `GCC` compiler runtime
+libraries. Have every executable we run have a copy of that library built in is a waste of space in memory, since all
+programs need exactly the same library.
 
-### Using the `buildenv` module
+To save space (and to allow us to upgrade the libraries), dynamically linked
+programs used _shared libraries_. A runtime loader in Linux (often called the dynamic linker/loader) is
+responsible for loading shared libraries required by a program when it starts.
+It resolves symbols and links the program to the correct library functions and variables at runtime.
+This allows multiple programs to share the same libraries in memory and enables libraries to be updated independently
+of applications.
 
-### Building our project
+<p align="center"><img src="img/runtime-loader.png" alt="Runtime loader" width="600px"/></p>
+
+The runtime loader is perhaps the most critical part of any operating system, as it controls the behaviour of most
+applications on any system
+
+### What affects the behaviour of the runtime loader?
+
+There are a few things that can impact the behaviour of the runtime loader:
+
+* Hints in the environment about where to look for our shared libraries. `LD_LIBRARY_PATH` in particular is typically
+  used to influence the behaviour of the runtime loader.
+* Information can be stoed directly in the library/application that you are trying to load. At compile time, we can
+  store information about the paths to search when looking for libraries. This can be done in such a way that it can
+  be overridden by `LD_LIBRARY_PATH` (`RUNPATH` linking), or in a way where `LD_LIBRARY_PATH` has no influence
+  (`RPATH` linking).
+* The runtime loader also has default locations it searchs for libraries. These are used as a last resort.
+
+For a given application or library, we can inspect what the runtime loader will resolve the the shared libraries to
+using the command `ldd`. For our failed build, we can do this on the binary `hello_mpi_hdf5`, which was created by our
+build (and mentioned in some of our errors):
+``` { .bash .no-copy}
+{EESSI/2025.06} $ ldd hello_mpi_hdf5
+        linux-vdso.so.1 (0x0000f1bedad95000)
+        libmpi.so.40 => /cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/OpenMPI/5.0.8-GCC-14.3.0/lib/libmpi.so.40 (0x0000f1bedaa10000)
+        libhdf5_cpp.so.310 => not found
+        libhdf5.so.310 => not found
+        ...
+```
+While a lot of libraries are listed, we note that only two of them are not found: the ones related to `HDF5`! Why not
+though? Why couldn't the runtime loader find them? For that we need to think again about how EESSI works.
+
+### EESSI ships its own runtime loader
+
+The reason EESSI is like a container is because when it builds and ships applications and libraries, it tells them to
+use the runtime loader from the EESSI compatibility layer, not from the local operating system. This is what gives us
+independence from the underlying operating system.
+
+However, because EESSI needs to live side-by-side with the underlying operating system,
+we cannot use `LD_LIBRARY_PATH` to find libraries (as setting this also affects the behaviour of the host runtime
+loader, which may break things). EESSI therefore must use `RPATH`-linking for all of the programs it ships in the
+software layer.
+
+We can inspect the RPATH information encoded in a libary using a tool called `patchelf` (which is
+shipped in EESSI):
+``` { .bash .no-copy }
+{EESSI/2025.06} ocaisa@~/EESSI/cicd-demo/build(main)$ patchelf --print-rpath hello_mpi_hdf5
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/OpenMPI/5.0.8-GCC-14.3.0/lib
+```
+So there is some information in the RPATH header of our executable that tells it where to find the MPI libraries
+(and it _does_ find them as we saw in our `ldd` output), but there is nothing there to tell it where to find the
+`HDF5` libraries.
+
+To inject this information we need to give hints to the compiler that this information is required _inside_ the binary.
+This is very tedious though if we are building lots of applications with lots of different dependencies, so instead we
+use _compiler wrappers_ to automatically inject this information based on the modules we have loaded at the time we
+do the compilation.
+
+This is done by default for everything that EESSI itself ships, but when building software manually with EESSI, we
+need to activate these wrappers.
+
+## Using the `buildenv` module
+
+## Building our software project (Part 2)
  
