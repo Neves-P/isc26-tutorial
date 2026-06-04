@@ -1,5 +1,11 @@
 # Using EESSI
 
+!!! Note "Learning Objectives"
+
+    * Configure EESSI in your environment
+    * Explore the software that EESSI has to offer
+    * Run examples for some software packages included in EESSI
+
 If the EESSI repository is available, all you need to do is set up your shell environment,
 and you can start using the software installations that EESSI provides.
 

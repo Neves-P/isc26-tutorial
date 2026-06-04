@@ -1,5 +1,11 @@
 # Getting Access to EESSI
 
+!!! Note "Learning Objectives"
+
+    * Learn how to check if EESSI is available
+    * Learn how to install EESSI locally if you have administrator permissions
+    * Learn how to start EESSI inside a container
+
 To get access to EESSI, it suffices to have [CernVM-FS](https://cernvm.cern.ch/fs/) installed, and make it aware
 of the EESSI repository.
 

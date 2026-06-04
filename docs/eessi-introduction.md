@@ -1,5 +1,11 @@
 # Introduction to EESSI
 
+!!! Note "Learning Objectives"
+
+    * Learn the basic layered architecture of EESSI
+    * Understand what open source software delivers each layer
+    * Explore some of the history of EESSI 
+
 <p align="center"><a href="https://eessi.github.io/docs"><img src="img/EESSI_logo_horizontal_transparant.png" alt="EESSI logo" width="450px"/></a></p>
 
 ## What is EESSI?

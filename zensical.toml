@@ -50,6 +50,9 @@ nav = [
    { "What is EESSI?" = "eessi-introduction.md" },
    { "How to use EESSI" = "eessi-usage.md" },
    { "Use cases for EESSI" = "eessi-use-cases.md" },
+   { "Building on top of EESSI" = "building-on-top.md" },
+   { "Using EESSI in CI" = "eessi-in-ci.md" },
+   { "Advanced topics" = "advanced-topics.md" },
 ]
 
 # With the "extra_css" option you can add your own CSS styling to customize

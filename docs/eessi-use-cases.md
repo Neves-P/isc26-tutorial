@@ -1,5 +1,9 @@
 # Use Cases for EESSI
 
+!!! Note "Learning Objectives"
+
+    * Identify use cases for a fully reproducible environment like EESSI
+
 EESSI enables a variety of use cases, including:
 
 * A uniform, extensible software stack across HPC clusters, clouds, servers, and laptops

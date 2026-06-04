@@ -16,6 +16,9 @@ EESSI provides a shared, portable, and optimized software stack for scientific c
 2. [Introduction to EESSI](eessi-introduction.md)
 3. [Using EESSI](eessi-usage.md)
 4. [EESSI Use Cases](eessi-use-cases.md)
+5. [Building on top of EESSI](building-on-top.md)
+6. [Using EESSI in CI](eessi-in-ci.md)
+7. [Advanced topics](advanced-topics.md)
 
 ## Learning Objectives
 
