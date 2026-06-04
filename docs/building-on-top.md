@@ -277,7 +277,7 @@ our project. :rocket:
 :warning: **We're not done yet though!** :warning:
 
 It's great that the project built, but we haven't tested it yet. Going back to our `README.md`, we find the command we
-need to run to execute the tests:
+need to run the tests:
 ``` { .bash .copy }
 ctest --output-on-failure --verbose
 ```
@@ -344,13 +344,18 @@ The following tests FAILED:
 Errors while running CTest
 ```
 
-:anguished: All our tests failed! Our output is full of errors like
+:anguished: All our tests failed!
+
+Our output is full of errors like
 ``` { .output .no-copy }
 /home/ocaisa/EESSI/cicd-demo/build/hello_mpi_hdf5: error while loading shared libraries: libhdf5_cpp.so.310: cannot open shared object file: No such file or directory
 ```
 What went wrong?
 
 ### Why did our build fail the tests?
+
+To understand where the failure is coming from, we first need to understand what actually happens when we try to run a
+program on a computer.
 
 ### Using the `buildenv` module
 
