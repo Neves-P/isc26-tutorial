@@ -357,7 +357,7 @@ What went wrong?
 To understand where the failure is coming from, we first need to understand what actually happens when we try to run a
 program on a computer. Our applications that we want to run take up space in memory, but many of them share parts of
 their dependency tree. For example, every application built with the `GCC` compiler, require the `GCC` compiler runtime
-libraries. Have every executable we run have a copy of that library built in is a waste of space in memory, since all
+libraries. Having every executable we run include a copy of that library internally in is a waste of space in memory, since all
 programs need exactly the same library.
 
 To save space (and to allow us to upgrade the libraries), dynamically linked
@@ -370,7 +370,7 @@ of applications.
 <p align="center"><img src="img/runtime-loader.png" alt="Runtime loader" width="600px"/></p>
 
 The runtime loader is perhaps the most critical part of any operating system, as it controls the behaviour of most
-applications on any system
+applications on any system.
 
 ### What affects the behaviour of the runtime loader?
 
@@ -378,13 +378,13 @@ There are a few things that can impact the behaviour of the runtime loader:
 
 * Hints in the environment about where to look for our shared libraries. `LD_LIBRARY_PATH` in particular is typically
   used to influence the behaviour of the runtime loader.
-* Information can be stoed directly in the library/application that you are trying to load. At compile time, we can
+* Information can be stored directly in the library/application that you are trying to load. At compile time, we can
   store information about the paths to search when looking for libraries. This can be done in such a way that it can
   be overridden by `LD_LIBRARY_PATH` (`RUNPATH` linking), or in a way where `LD_LIBRARY_PATH` has no influence
   (`RPATH` linking).
 * The runtime loader also has default locations it searchs for libraries. These are used as a last resort.
 
-For a given application or library, we can inspect what the runtime loader will resolve the the shared libraries to
+For a given application or library, we can inspect what the runtime loader will resolve the shared libraries to
 using the command `ldd`. For our failed build, we can do this on the binary `hello_mpi_hdf5`, which was created by our
 build (and mentioned in some of our errors):
 ``` { .bash .no-copy}
@@ -419,13 +419,14 @@ So there is some information in the RPATH header of our executable that tells it
 (and it _does_ find them as we saw in our `ldd` output), but there is nothing there to tell it where to find the
 `HDF5` libraries.
 
-To inject this information we need to give hints to the compiler that this information is required _inside_ the binary.
-This is very tedious though if we are building lots of applications with lots of different dependencies, so instead we
-use _compiler wrappers_ to automatically inject this information based on the modules we have loaded at the time we
-do the compilation.
+To inject this information  _inside the binary_ we need to give instruct the compiler that this information is
+required. This is very tedious though as it requires lot of compiler flags, and when we are building lots of
+applications with lots of different dependencies it gets very complex quickly. Instead, we
+use _compiler wrappers_ to automatically inject the required flags into the compiler command based on the modules we
+have loaded at the time we do the compilation.
 
 This is done by default for everything that EESSI itself ships, but when building software manually with EESSI, we
-need to activate these wrappers.
+need to somehow activate these wrappers. That is where the EESSI `buildenv` module comes in.
 
 ## Using the `buildenv` module
 
