@@ -358,10 +358,10 @@ To understand where the failure is coming from, we first need to understand what
 program on a computer. Our applications that we want to run take up space in memory, but many of them share parts of
 their dependency tree. For example, every application built with the `GCC` compiler, require the `GCC` compiler runtime
 libraries. Having every executable we run include a copy of that library internally in is a waste of space in memory, since all
-programs need exactly the same library.
+programs need exactly the same libraries.
 
 To save space (and to allow us to upgrade the libraries), dynamically linked
-programs used _shared libraries_. A runtime loader in Linux (often called the dynamic linker/loader) is
+programs use _shared libraries_. A runtime loader in Linux (often called the dynamic linker/loader) is
 responsible for loading shared libraries required by a program when it starts.
 It resolves symbols and links the program to the correct library functions and variables at runtime.
 This allows multiple programs to share the same libraries in memory and enables libraries to be updated independently
@@ -406,8 +406,8 @@ independence from the underlying operating system.
 
 However, because EESSI needs to live side-by-side with the underlying operating system,
 we cannot use `LD_LIBRARY_PATH` to help the loader to find libraries (as setting this also affects the behaviour of the
-host runtime loader, which may break things). EESSI therefore must use `RPATH`-linking for all of the programs it ships
-in the software layer.
+host runtime loader, which may unintentionally break applications coming from the host). EESSI therefore must use
+`RPATH`-linking for all of the programs it ships in the software layer.
 
 We can inspect the RPATH information encoded in a libary using a tool called `patchelf` (which is
 shipped in EESSI):
@@ -426,7 +426,7 @@ when we are building lots of applications with lots of different dependencies it
 use _compiler wrappers_ to automatically inject the required flags into the compiler command based on the modules we
 have loaded at the time we do the compilation.
 
-This is done by default for everything that EESSI itself ships, but when building software manually with EESSI, we
+This is done by default for everything that EESSI itself ships, but when building software manually with EESSI we
 need to somehow activate these wrappers. That is where the EESSI `buildenv` module comes in.
 
 ## Using the `buildenv` module
@@ -480,8 +480,343 @@ We can see that the module is adding the location of the compiler wrapper for `g
 characters in the path). It also sets default compilation flags for our C++ compiler, and defines the MPI compiler to
 be used.
 
-The `buildenv` module cannot work miracles, complex cases may easily fall through the cracks, but it should allow many
-applications to be build directly on top of EESSI. 
-
 ## Building our software project (Part 2)
- 
+
+Let's now load the `buildenv` module (it's not a dependency of our package, it's a build-time dependency coming from
+our use of EESSI):
+``` { .bash .copy}
+module load buildenv/default-foss-2025b
+```
+
+We have seen that our application was missing `RPATH` information, so we need to restart our build process from
+scratch:
+
+``` { .bash .no-copy}
+{EESSI/2025.06} $ cd ..  # (1)!
+
+{EESSI/2025.06} $ ls  # (2)!
+CMakeLists.txt  LICENSE  README.md  build  main.cpp  verify.cpp
+
+{EESSI/2025.06} $ rm -r build  # (3)!
+rm: remove write-protected regular file 'build/CMakeFiles/4.0.3/CMakeSystem.cmake'? y
+rm: remove write-protected regular file 'build/CMakeFiles/4.0.3/CMakeCXXCompiler.cmake'? y
+rm: remove write-protected regular file 'build/CMakeFiles/4.0.3/CMakeCCompiler.cmake'? y
+
+{EESSI/2025.06} $ mkdir build
+
+{EESSI/2025.06} $ cd  build
+
+{EESSI/2025.06} $ cmake ..
+-- The CXX compiler identification is GNU 14.3.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/buildenv/default-foss-2025b/bin/rpath_wrappers/gxx_wrapper/g++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found MPI_CXX: /cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/OpenMPI/5.0.8-GCC-14.3.0/lib/libmpi.so (found version "3.1")
+-- Found MPI: TRUE (found version "3.1")
+-- The C compiler identification is GNU 14.3.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/buildenv/default-foss-2025b/bin/rpath_wrappers/gcc_wrapper/gcc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Found HDF5: hdf5_cpp-shared (found version "1.14.6") found components: CXX
+-- Configuring done (13.0s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/ocaisa/EESSI/cicd-demo/build
+{EESSI/2025.06} ocaisa@~/EESSI/cicd-demo/build(main)$ make
+[ 25%] Building CXX object CMakeFiles/hello_mpi_hdf5.dir/main.cpp.o
+[ 50%] Linking CXX executable hello_mpi_hdf5
+[ 50%] Built target hello_mpi_hdf5
+[ 75%] Building CXX object CMakeFiles/verify_hdf5.dir/verify.cpp.o
+[100%] Linking CXX executable verify_hdf5
+[100%] Built target verify_hdf5
+```
+
+1. We were in the `build` directory and need to go up a directory.
+2. Let's check we are back in the right place at the root directory for our project.
+3. Completely remove the `build` directory, some files were read-only so they require explicit permissions to remove.
+
+There is a very relevant change in the output here, we now see that `CMake` is detecting the compiler wrappers coming
+from our `buildenv` module as the compiler. We can inspect the changes that this makes to the `RPATH` information in
+our executable `hello_mpi_hdf5` using `patchelf` (but since I know this generates a lot of information I will process
+the output a little for readability):
+
+``` { .bash .no-copy}
+{EESSI/2025.06} $ patchelf --print-rpath hello_mpi_hdf5 | tr ":" "\n"
+/cvmfs/software.eessi.io/host_injections/2025.06/software/linux/aarch64/neoverse_n1/rpath_overrides/OpenMPI/system/lib
+/cvmfs/software.eessi.io/host_injections/2025.06/software/linux/aarch64/neoverse_n1/rpath_overrides/OpenMPI/system/lib64
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/buildenv/default-foss-2025b/lib
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/buildenv/default-foss-2025b/lib64
+$ORIGIN
+$ORIGIN/../lib
+$ORIGIN/../lib64
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/ScaLAPACK/2.2.2-gompi-2025b-fb/lib64
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/FFTW.MPI/3.3.10-gompi-2025b/lib64
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/FFTW/3.3.10-GCC-14.3.0/lib64
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/FlexiBLAS/3.4.5-GCC-14.3.0/lib64
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/OpenMPI/5.0.8-GCC-14.3.0/lib64
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/GCCcore/14.3.0/lib64
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/GCCcore/14.3.0/lib
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/OpenBLAS/0.3.30-GCC-14.3.0/lib/../lib64
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/libarchive/3.8.1-GCCcore-14.3.0/lib/../lib64
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/zstd/1.5.7-GCCcore-14.3.0/lib/../lib64
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/lz4/1.10.0-GCCcore-14.3.0/lib/../lib64
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/cURL/8.14.1-GCCcore-14.3.0/lib/../lib64
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/libpsl/0.21.5-GCCcore-14.3.0/lib/../lib64
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/libunistring/1.3-GCCcore-14.3.0/lib/../lib64
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/libiconv/1.18-GCCcore-14.3.0/lib/../lib64
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/libidn2/2.3.8-GCCcore-14.3.0/lib/../lib64
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/HDF5/1.14.6-gompi-2025b/lib/../lib64
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/Perl/5.40.2-GCCcore-14.3.0/lib/../lib64
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/libaec/1.1.4-GCCcore-14.3.0/lib/../lib64
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/UCC/1.4.4-GCCcore-14.3.0/lib/../lib64
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/PRRTE/3.0.11-GCCcore-14.3.0/lib/../lib64
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/PMIx/5.0.8-GCCcore-14.3.0/lib/../lib64
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/libfabric/2.1.0-GCCcore-14.3.0/lib/../lib64
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/UCX/1.19.0-GCCcore-14.3.0/lib/../lib64
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/libevent/2.1.12-GCCcore-14.3.0/lib/../lib64
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/OpenSSL/3/lib64/../lib64
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/hwloc/2.12.1-GCCcore-14.3.0/lib/../lib64
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/libpciaccess/0.18.1-GCCcore-14.3.0/lib/../lib64
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/libxml2/2.14.3-GCCcore-14.3.0/lib/../lib64
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/numactl/2.0.19-GCCcore-14.3.0/lib/../lib64
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/GCCcore/14.3.0/lib/gcc/aarch64-unknown-linux-gnu/14.3.0
+/cvmfs/software.eessi.io/versions/2025.06/compat/linux/aarch64/lib/../lib64
+/cvmfs/software.eessi.io/versions/2025.06/compat/linux/aarch64/usr/lib/../lib64
+/cvmfs/software.eessi.io/versions/2025.06/compat/linux/aarch64/lib
+/cvmfs/software.eessi.io/versions/2025.06/compat/linux/aarch64/usr/lib
+/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/OpenMPI/5.0.8-GCC-14.3.0/lib
+```
+
+Wow, that is a lot of paths to search! In this long list we can see the location of the `HDF5` libraries. If we now
+check our binary with `ldd`
+```  { .bash .copy}
+ldd hello_mpi_hdf5
+```
+we can see that the required `HDF5` libraries are indeed found in these locations.
+
+For the final check then we rerun our test command
+```  { .bash .no-copy}
+{EESSI/2025.06} $ ctest --output-on-failure --verbose
+UpdateCTestConfiguration  from :/home/ocaisa/EESSI/cicd-demo/build/DartConfiguration.tcl
+Test project /home/ocaisa/EESSI/cicd-demo/build
+Constructing a list of tests
+Done constructing a list of tests
+Updating test list for fixtures
+Added 0 tests to meet fixture requirements
+Checking test dependency graph...
+Checking test dependency graph end
+test 1
+    Start 1: RunMPIProgram
+
+1: Test command: /cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/OpenMPI/5.0.8-GCC-14.3.0/bin/mpiexec "-n" "4" "/home/ocaisa/EESSI/cicd-demo/build/hello_mpi_hdf5"
+1: Working Directory: /home/ocaisa/EESSI/cicd-demo/build
+1: Test timeout computed to be: 9999879
+1: Rank 2 wrote value 2 to file 'parallel_hello.h5'
+1: Rank 0 wrote value 0 to file 'parallel_hello.h5'
+1: Rank 1 wrote value 1 to file 'parallel_hello.h5'
+1: Rank 3 wrote value 3 to file 'parallel_hello.h5'
+1/2 Test #1: RunMPIProgram ....................   Passed    1.93 sec
+test 2
+    Start 2: VerifyHDF5Output
+
+2: Test command: /home/ocaisa/EESSI/cicd-demo/build/verify_hdf5
+2: Working Directory: /home/ocaisa/EESSI/cicd-demo/build
+2: Test timeout computed to be: 9999878
+2: Verifying dataset: 0 1 2 3
+2: Verification successful.
+2/2 Test #2: VerifyHDF5Output .................   Passed    0.09 sec
+
+100% tests passed, 0 tests failed out of 2
+
+Total Test time (real) =   2.03 sec
+```
+
+:tada: **Our tests now pass!** :tada: Not only that, since we ended up doing a detailed inspection of our binaries we
+have explicitly verified that the our package is using EESSI for all it's dependencies and is using the runtime loader
+provided by EESSI.
+
+## Extending EESSI using `EESSI-extend` 
+
+While the `buildenv` may allow many applications to be built directly on top of EESSI, it cannot work miracles
+( :disappointed: ). Building our own package is one thing, but building the dependency tree for our package means
+potentially dealing with complex cases which may easily fall through the cracks in this approach. Unlike our own
+package where we are very familiar with the internal workings, dealing with external dependencies can actually
+consume a lot more effort because solving any problems requires understanding how the dependency package is built in
+the first place. Such issues are the reason that tools such as [EasyBuild](https://easybuild.io/),
+[Spack](https://spack.io/), [GuixHPC](https://hpc.guix.info/), etc., exist and are used heavily in the HPC space.
+
+In EESSI, EasyBuild is used exclusively to deliver packages in the software layer. EasyBuild has hundreds
+of configuration options though, and the shared environment of EESSI means that we need everyone to be using a
+consistent configuration of EasyBuild so that we all start from same base. There are multiple ways that one can
+[configure EasyBuild](https://docs.easybuild.io/configuration/), one of which is by using _environment variables_.
+Since environment modules are an exact match for this case, it is convenient (and consistent with our general approach)
+to use an environment module to configure EasyBuild for use with EESSI. For the current version of EESSI that we have
+loaded, the module is called `EESSI-extend/2025.06-easybuild`. We can learn about `EESSI-extend` with
+``` { .bash .copy }
+module show EESSI-extend/2025.06-easybuild
+``` 
+
+Before we experiment with EESSI-extend, let's clean out our environment and start again
+
+``` { .bash .copy }
+module purge  # (1)!
+module load EESSI/2025.06  # (2)!
+module load EESSI-extend/2025.06-easybuild
+```
+
+1. Completely empty the environment of all modules.
+2. Whether or not we need we need to reload the EESSI module itself depends a bit on how EESSI was initialised.
+
+### Using `EESSI-extend` to install a package with  EasyBuild
+
+First, we need something that we want to install. For the purposes of this tutorial we are going to use a build
+recipe (or _easyconfig_) for EasyBuild targetting the package we have been working with to date.
+
+!!! warning
+
+    The easyconfig targets the package that is under the EESSI organisation, not the one you are using locally.
+
+```bash title="cicd-demo-0.1.0-gompi-2025b.eb"
+--8<-- "scripts/cicd-demo-0.1.0-gompi-2025b.eb"
+```
+
+We can now take this recipe and use it with the EasyBuild command `eb`
+
+``` { .bash .copy }
+eb cicd-demo-0.1.0-gompi-2025b.eb
+```
+
+This will give a lot of output as EasyBuild goes through all the various steps it takes when performing an
+installation. We won't go through it all, but we can look for specific parts that matches what we carried out
+ourselves earlier.
+
+``` { .output .no-copy}
+...
+  >> loading modules for build dependencies:
+  >>  * CMake/4.0.3-GCCcore-14.3.0
+  >> loading modules for (runtime) dependencies:
+  >>  * HDF5/1.14.6-gompi-2025b
+  >> defining build environment for gompi/2025b toolchain
+...
+```
+This is where EasyBuild is loading all the requirements it needs to build the project. It is also defining
+the build environment, which includes the configuration of the `RPATH` wrappers.
+
+``` { .output .no-copy}
+...
+== configuring...
+== Running pre-configure hook...
+  >> running shell command:
+        cmake  -DCMAKE_INSTALL_PREFIX=/home/ocaisa/eessi/versions/2025.06/software/linux/aarch64/neoverse_n1/software/cicd-demo/0.1.0-gompi-2025b -DCMAKE_MESSAGE_LOG_LEVEL=STATUS
+-DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_LIBDIR:PATH=lib -DCMAKE_SYSROOT=/cvmfs/software.eessi.io/versions/2025.06/compat/linux/aarch64
+-DCMAKE_C_COMPILER=/tmp/eb-4yjooryq/tmpky84fm88/rpath_wrappers/gcc_wrapper/gcc -DCMAKE_CXX_COMPILER=/tmp/eb-4yjooryq/tmpky84fm88/rpath_wrappers/gxx_wrapper/g++
+-DCMAKE_Fortran_COMPILER=/tmp/eb-4yjooryq/tmpky84fm88/rpath_wrappers/gfortran_wrapper/gfortran -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_FIND_USE_PACKAGE_REGISTRY=OFF
+/tmp/ocaisa/easybuild/build/cicddemo/0.1.0/gompi-2025b/cicd-demo-0.1.0
+        [started at: 2026-06-05 13:33:44]
+        [working dir: /tmp/ocaisa/easybuild/build/cicddemo/0.1.0/gompi-2025b/easybuild_obj]
+        [output and state saved to /tmp/eb-4yjooryq/run-shell-cmd-output/cmake-rajuu1qd]
+...
+```
+Here, EasyBuild is running the CMake command with some additional options. We also see that EasyBuild allows us to
+explore the output of the command if we wish to do so (the output is also stored in the general log for the build job).
+
+``` { .output .no-copy}
+...
+== building...
+  >> running shell command:
+        make  -j 12
+...
+```
+EasyBuild also runs the build step similar to how we have done it.
+
+``` { .output .no-copy}
+...
+== testing...
+== Running pre-test hook...
+  >> running shell command:
+        ctest --no-tests=error
+...
+```
+EasyBuild also executes the test step, and verifies that all tests have passed. Once this step is done, it proceeds to
+install the package and make an environment module file for it.
+
+We can now load the module file for our package and run it as if it was coming from EESSI itself :rocket:
+``` { .bash .no-copy}
+{EESSI/2025.06} $ module load cicd-demo/0.1.0-gompi-2025b
+
+{EESSI/2025.06} $ which hello_mpi_hdf5
+/home/user/eessi/versions/2025.06/software/linux/aarch64/neoverse_n1/software/cicd-demo/0.1.0-gompi-2025b/bin/hello_mpi_hdf5
+
+{EESSI/2025.06} $ mpirun -n 2 hello_mpi_hdf5
+Rank 0 wrote value 0 to file 'parallel_hello.h5'
+Rank 1 wrote value 1 to file 'parallel_hello.h5'
+```
+
+!!! note
+
+    Once we unload the EESSI-extend module we lose access to the `cicd-demo` module. To restore access we must reload
+    the `EESSI-extend` module:
+    
+    ``` { .bash .no-copy }
+    {EESSI/2025.06} ocaisa@~/EESSI/eessi-tutorial(main)$ module unload EESSI-extend
+
+    Inactive Modules:  # (1)!
+      1) GCC/14.3.0                   5) OpenSSL/3                       9) UCC/1.4.4-GCCcore-14.3.0       13) hwloc/2.12.1-GCCcore-14.3.0       17) libpciaccess/0.18.1-GCCcore-14.3.0
+      2) GCCcore/14.3.0               6) PMIx/5.0.8-GCCcore-14.3.0      10) UCX/1.19.0-GCCcore-14.3.0      14) libaec/1.1.4-GCCcore-14.3.0       18) libxml2/2.14.3-GCCcore-14.3.0
+      3) HDF5/1.14.6-gompi-2025b      7) PRRTE/3.0.11-GCCcore-14.3.0    11) cicd-demo/0.1.0-gompi-2025b    15) libevent/2.1.12-GCCcore-14.3.0    19) numactl/2.0.19-GCCcore-14.3.0
+      4) OpenMPI/5.0.8-GCC-14.3.0     8) Perl/5.40.2-GCCcore-14.3.0     12) gompi/2025b                    16) libfabric/2.1.0-GCCcore-14.3.0
+
+    {EESSI/2025.06} ocaisa@~/EESSI/eessi-tutorial(main)$ which hello_mpi_hdf5  # (2)!
+    which: no hello_mpi_hdf5 in (/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/EasyBuild/5.3.0/bin:...)
+    
+    {EESSI/2025.06} ocaisa@~/EESSI/eessi-tutorial(main)$ module load EESSI-extend/2025.06-easybuild
+    -- Using /tmp/$USER as a temporary working directory for installations, you can override this by setting the environment variable WORKING_DIR and reloading the module (e.g., /dev/shm
+    is a common option)
+    Configuring for use of EESSI_USER_INSTALL under /home/ocaisa/eessi
+    -- To create installations for EESSI, you _must_ have write permissions to /home/ocaisa/eessi/versions/2025.06/software/linux/aarch64/neoverse_n1
+    -- You may wish to configure a sources directory for EasyBuild (for example, via setting the environment variable EASYBUILD_SOURCEPATH) to allow you to reuse existing sources for
+    packages.
+
+    Activating Modules:  # (3)!
+      1) GCC/14.3.0                   5) OpenSSL/3                       9) UCC/1.4.4-GCCcore-14.3.0       13) hwloc/2.12.1-GCCcore-14.3.0       17) libpciaccess/0.18.1-GCCcore-14.3.0
+      2) GCCcore/14.3.0               6) PMIx/5.0.8-GCCcore-14.3.0      10) UCX/1.19.0-GCCcore-14.3.0      14) libaec/1.1.4-GCCcore-14.3.0       18) libxml2/2.14.3-GCCcore-14.3.0
+      3) HDF5/1.14.6-gompi-2025b      7) PRRTE/3.0.11-GCCcore-14.3.0    11) cicd-demo/0.1.0-gompi-2025b    15) libevent/2.1.12-GCCcore-14.3.0    19) numactl/2.0.19-GCCcore-14.3.0
+      4) OpenMPI/5.0.8-GCC-14.3.0     8) Perl/5.40.2-GCCcore-14.3.0     12) gompi/2025b                    16) libfabric/2.1.0-GCCcore-14.3.0
+
+    {EESSI/2025.06} ocaisa@~/EESSI/eessi-tutorial(main)$ which hello_mpi_hdf5  # (4)!
+    /home/user/eessi/versions/2025.06/software/linux/aarch64/neoverse_n1/software/cicd-demo/0.1.0-gompi-2025b/bin/hello_mpi_hdf5
+    ```
+
+    1. Unloading `EESSI-extend` causes us to lose access to `cicd-demo`, so it's module file and all the ones it loaded
+       become inactive.
+    2. We can no longer find the executable from `cicd-demo` in our `PATH`.
+    3. Once we reload `EESSI-extend` all of inactive modules become active again.
+    4. The executable from `cicd-demo` is available in our `PATH` again.
+
+### Going further with `EESSI-extend`
+
+We have seen that we use `EESSI-extend` to install an EasyBuild recipe, replicating the approach taken by EESSI itself
+when installing packages. EasyBuild has over support for almost 3000 software packages, and thousands of extensions for
+things like `R` and `Python`. If you want to explore whether EasyBuild already has support for a package you are
+interested in you can use, for example,
+``` { .bash .copy }
+eb --search openfoam
+```
+and then we can check what would be required to be built if we wanted to attempt an install of a specific package
+``` { .bash .copy }
+eb --missing OpenFOAM-v2506-foss-2025b.eb
+```
+
+We then even try to proceed with the installation, including building the dependencies
+``` { .bash .copy }
+eb --robot OpenFOAM-v2506-foss-2025b.eb
+```
+
+!!! warning
+
+    There's no guarantee that the last step will work out-of-the-box. It is not unusual for EasyBuild recipes to
+    require patches to work correctly on top of EESSI, or on new architectures that were not used during initial
+    testing.
