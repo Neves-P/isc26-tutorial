@@ -41,10 +41,13 @@ available on the platform where the workflow is carried out. For this reason, EE
 and GitLab to make sure this is the case:
 
 * The EESSI GitHub Action can be found on the [GitHub Marketplace](https://github.com/marketplace),
-at [https://github.com/marketplace/actions/eessi](https://github.com/marketplace/actions/eessi).
+  at [https://github.com/marketplace/actions/eessi](https://github.com/marketplace/actions/eessi).
 
 * The EESSI GitLab CI/CD component can be found in the [GitLab CI/CD Catalog](https://gitlab.com/explore/catalog), at
-[https://gitlab.com/explore/catalog/eessi/gitlab-eessi](https://gitlab.com/explore/catalog/eessi/gitlab-eessi).
+  [https://gitlab.com/explore/catalog/eessi/gitlab-eessi](https://gitlab.com/explore/catalog/eessi/gitlab-eessi). It
+  is possible to use the [EESSI GitLab Component](https://gitlab.com/explore/catalog/eessi/gitlab-eessi) in a
+  self-hosted GitLab instance, documentation on how to do this is available at
+<https://docs.gitlab.com/ci/components/#use-a-gitlabcom-component-on-gitlab-self-managed>.
 
 
 ## Using the EESSI GitHub Action
@@ -53,11 +56,7 @@ at [https://github.com/marketplace/actions/eessi](https://github.com/marketplace
 
     The [EESSI GitLab Component](https://gitlab.com/explore/catalog/eessi/gitlab-eessi) also exists, and this allows
     you to follow a very similar approach to that described
-    here for GitHub. At the end of the episode we will provide the equivalent file needed to enable GitLab CI.
-
-    It is possible to use the [EESSI GitLab Component](https://gitlab.com/explore/catalog/eessi/gitlab-eessi) in a
-    self-hosted GitLab instance, documentation on how to do this is available at
-    <https://docs.gitlab.com/ci/components/#use-a-gitlabcom-component-on-gitlab-self-managed>. 
+    here for GitHub. At the end of the episode we will provide the equivalent file needed to enable GitLab CI. 
 
 ## Adding CI based on EESSI to our software project
 
