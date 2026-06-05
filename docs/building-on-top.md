@@ -237,8 +237,6 @@ make  # (3)!
 
 If we try this, we get output similar to
 ``` { .output .no-copy}
-{EESSI/2025.06} $ module load CMake
-
 {EESSI/2025.06} $ mkdir build
 
 {EESSI/2025.06} $ cd build
