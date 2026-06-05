@@ -4,6 +4,6 @@
 
 ## MPI runtimes
 
-# Other software installation tools on top of EESSI
+## Other software installation tools on top of EESSI
 
-## Spack
+### Spack

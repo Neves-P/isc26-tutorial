@@ -271,9 +271,13 @@ will become a green tick which indicates that our CI for the commit has passed.
 
 ??? note "What would have our CI looked like in GitLab?"
 
-    There are not so many differences with how our specific CI would have looked like in CI/CD. One major difference is
-    where the CI file is stored. In the case of GitLab CI/CD, the workflow must be stored in a file called
-    `.gitlab-ci.yml` in the base directory of the repository. The documentation of EESSI GitLab compenent
+    There are not so many real differences with how our specific CI would have looked like in CI/CD. The core steps
+    that we need to run are the same, but the structure to get to them is different. Again an LLM is of major
+    assistance when creating our CI file.
+
+    One major practical difference is where the CI file is stored and what it is called. In the case of GitLab CI/CD,
+    the workflow must be stored in a file called
+    `.gitlab-ci.yml` in the base directory of the repository. The documentation of EESSI GitLab component
     again provides a starting point from which we can construct a final CI file:
     ```yaml title=".gitlab-ci.yml"
     --8<-- "scripts/.gitlab-ci.yml"
@@ -281,7 +285,8 @@ will become a green tick which indicates that our CI for the commit has passed.
 
 ### What happens when CI fails?
 
-What does a failure look like in CI? We know that if we do not load the `buildenv` module, our tests should fail. Let's
+What does a failure look like in CI? From the previous episode, we know that if we do not load the `buildenv` module
+our tests should fail. Let's
 construct that scenario, by commenting out the line that loads that module:
 ```yaml title="ci.yml"
 --8<-- "scripts/ci-broken.yml"
