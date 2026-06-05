@@ -405,23 +405,24 @@ use the runtime loader from the EESSI compatibility layer, not from the local op
 independence from the underlying operating system.
 
 However, because EESSI needs to live side-by-side with the underlying operating system,
-we cannot use `LD_LIBRARY_PATH` to find libraries (as setting this also affects the behaviour of the host runtime
-loader, which may break things). EESSI therefore must use `RPATH`-linking for all of the programs it ships in the
-software layer.
+we cannot use `LD_LIBRARY_PATH` to help the loader to find libraries (as setting this also affects the behaviour of the
+host runtime loader, which may break things). EESSI therefore must use `RPATH`-linking for all of the programs it ships
+in the software layer.
 
 We can inspect the RPATH information encoded in a libary using a tool called `patchelf` (which is
 shipped in EESSI):
 ``` { .bash .no-copy }
-{EESSI/2025.06} ocaisa@~/EESSI/cicd-demo/build(main)$ patchelf --print-rpath hello_mpi_hdf5
+{EESSI/2025.06} $ patchelf --print-rpath hello_mpi_hdf5
 /cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/OpenMPI/5.0.8-GCC-14.3.0/lib
 ```
 So there is some information in the RPATH header of our executable that tells it where to find the MPI libraries
 (and it _does_ find them as we saw in our `ldd` output), but there is nothing there to tell it where to find the
 `HDF5` libraries.
 
-To inject this information  _inside the binary_ we need to give instruct the compiler that this information is
-required. This is very tedious though as it requires lot of compiler flags, and when we are building lots of
-applications with lots of different dependencies it gets very complex quickly. Instead, we
+To inject this information  _inside the binary_ we need to instruct the compiler that this information is
+required when we build our application. This is very tedious though as it requires lot of compiler flags when there are
+lots of dependencies, and
+when we are building lots of applications with lots of different dependencies it gets very complex quickly. Instead, we
 use _compiler wrappers_ to automatically inject the required flags into the compiler command based on the modules we
 have loaded at the time we do the compilation.
 
@@ -429,6 +430,58 @@ This is done by default for everything that EESSI itself ships, but when buildin
 need to somehow activate these wrappers. That is where the EESSI `buildenv` module comes in.
 
 ## Using the `buildenv` module
+
+EESSI provides the compiler wrappers needed to inject the `RPATH` information automatically into the things that are
+compiled. It does this via module file created for this purpose: `buildenv`. The `buildenv` module also sets
+environment variables that are used by build tools such as `CMake` and `Autotools`, which should help applications
+respect that they should prioritise the dependencies that come from EESSI.
+
+We can search for the available versions of `buildenv` using `module spider`:
+
+``` { .bash .no-copy}
+{EESSI/2025.06} $ module spider buildenv
+
+------------------------------------------------------------------------
+  buildenv:
+------------------------------------------------------------------------
+    Description:
+      This module sets a group of environment variables for compilers,
+      linkers, maths libraries, etc., that you can use to easily
+      transition between toolchains when building your software. To
+      query the variables being set please use: module show <this
+      module name>
+
+     Versions:
+        buildenv/default-foss-2024a
+        buildenv/default-foss-2025a
+        buildenv/default-foss-2025b
+```
+
+Looking at the patterns for the modules that we already have in our environment, we can guess that the version that is
+relevant for us is `buildenv/default-foss-2025b`. We can explore what the module actually does with:
+
+``` { .bash .copy}
+module show buildenv/default-foss-2025b
+```
+
+This produces a lot of information about environment variables being set. Let's look in detail at some specific
+examples:
+
+``` { .bash .no-copy }
+...
+prepend_path("PATH","/cvmfs/software.eessi.io/versions/2025.06/software/linux/aarch64/neoverse_n1/software/buildenv/default-foss-2025b/bin/rpath_wrappers/gxx_wrapper")
+...
+pushenv("CXXFLAGS","-O2 -ftree-vectorize -mcpu=native -fno-math-errno")
+...
+pushenv("MPICXX","mpicxx")
+...
+```
+We can see that the module is adding the location of the compiler wrapper for `g++` (`gxx` is used to avoid problematic
+characters in the path). It also sets default compilation flags for our C++ compiler, and defines the MPI compiler to
+be used.
+
+The `buildenv` module cannot work miracles, complex cases may easily fall through the cracks, but it should allow many
+applications to be build directly on top of EESSI. 
 
 ## Building our software project (Part 2)
  
