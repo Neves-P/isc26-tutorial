@@ -260,7 +260,53 @@ button a new box pops up that indicates that 4 different CI runs are executing.
 architecture. If we click on `Details` for one of the runs, we get taken to where the workflow is actually running,
 and the output it is generating.
 
+The run is broken down into `steps`, each of which has a name. The one we are interested in is
+`Build and test our package`, which is where we defined our build processs. While the build is running we can read the
+output, or we can view it after the run completes. Regardless, we note that the output is almost identical to that
+which we had when we ran the workflow ourselves. This is no more than we expect in reality, since this is what EESSI
+is supposed to deliver for us.
+
+If we wait a little we should see that our CI will succeed! :rocket: When it does the brown button in our Pull Request
+will become a green tick which indicates that our CI for the commit has passed.
+
+??? note "What would have our CI looked like in GitLab?"
+
+    There are not so many differences with how our specific CI would have looked like in CI/CD. One major difference is
+    where the CI file is stored. In the case of GitLab CI/CD, the workflow must be stored in a file called
+    `.gitlab-ci.yml` in the base directory of the repository. The documentation of EESSI GitLab compenent
+    again provides a starting point from which we can construct a final CI file:
+    ```yaml title=".gitlab-ci.yml"
+    --8<-- "scripts/.gitlab-ci.yml"
+    ```
 
 ### What happens when CI fails?
 
+What does a failure look like in CI? We know that if we do not load the `buildenv` module, our tests should fail. Let's
+construct that scenario, by commenting out the line that loads that module:
+```yaml title="ci.yml"
+--8<-- "scripts/ci-broken.yml"
+```
+
+We can now push the change to our Pull Request to rerun the CI.
+``` { .bash .copy }
+git add .github/workflows/ci.yml
+git commit -m "Don't load buildenv, which should break our CI"
+git push origin add_ci_to_project
+```
+
+Eventually, as expected, our CI will fail and we will get a red X beside our commit. We should also receive an email
+notification that our CI has failed. Such notifications are a critical part of CI, the value of CI is not just that
+the tests run silently, but that we are made aware immediately when things go wrong.
+
 ## Benefits of CI
+
+By automatically building and validating software whenever changes are made,
+CI helps developers identify issues early, reduce integration problems, and maintain confidence in the stability of
+their code.
+
+Combined with EESSI’s reproducible software environment, CI ensures that applications are tested under the
+same conditions regardless of where they are executed, improving reliability, collaboration, and overall software
+quality throughout the development process.
+
+It also means that when things go wrong, it is straightforward for us to drop into the environment where the tests
+fail, and interactively explore the problem. 
