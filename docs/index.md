@@ -12,7 +12,7 @@ EESSI provides a shared, portable, and optimized software stack for scientific c
 
 ## Tutorial Contents
 
-For those attending the live tutorial at ISC26, there is a [prepared environment](prepared-environment.md) available.)
+For those attending the live tutorial at ISC26, there is a [prepared environment](prepared-environment.md) available.
 
 1. [Introduction to EESSI](introduction.md)
 2. [Getting Access to EESSI](getting-access.md)
