@@ -32,7 +32,7 @@ README.eessi  defaults  host_injections  init  versions
 ```
 
 For starting to use EESSI, continue reading about
-[Setting up environment](eessi-usage.md#setting-up-your-environment).
+[Setting up environment](usage.md#setting-up-your-environment).
 
 If you see an error message as shown below, **EESSI is not yet accessible on your
 system**.
@@ -182,6 +182,6 @@ ls /cvmfs/software.eessi.io
 
 ---
 
-To start using EESSI, see [Using EESSI](eessi-usage.md).
+To start using EESSI, see [Using EESSI](usage.md).
 
 [*(back to overview page)*](index.md)
