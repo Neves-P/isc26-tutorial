@@ -10,7 +10,7 @@
 EESSI is sometimes described as "container without a container runtime". What that means is that it effectively
 provides an alternative operating system to the native one without the need for something to negotiate between the two.
 When we are _consuming_ software from EESSI, there is no real way to see this. It is only when we try to use EESSI as a
-basis for building new sotware that we are exposed to the addional complexity that this can bring.
+basis for building new sotware that we are exposed to the additional complexity that this can bring.
 
 ## Building a software project
 
@@ -380,7 +380,7 @@ There are a few things that can impact the behaviour of the runtime loader:
   store information about the paths to search when looking for libraries. This can be done in such a way that it can
   be overridden by `LD_LIBRARY_PATH` (`RUNPATH` linking), or in a way where `LD_LIBRARY_PATH` has no influence
   (`RPATH` linking).
-* The runtime loader also has default locations it searchs for libraries. These are used as a last resort.
+* The runtime loader also has default locations it searches for libraries. These are used as a last resort.
 
 For a given application or library, we can inspect what the runtime loader will resolve the shared libraries to
 using the command `ldd`. For our failed build, we can do this on the binary `hello_mpi_hdf5`, which was created by our
@@ -407,7 +407,7 @@ we cannot use `LD_LIBRARY_PATH` to help the loader to find libraries (as setting
 host runtime loader, which may unintentionally break applications coming from the host). EESSI therefore must use
 `RPATH`-linking for all of the programs it ships in the software layer.
 
-We can inspect the RPATH information encoded in a libary using a tool called `patchelf` (which is
+We can inspect the RPATH information encoded in a library using a tool called `patchelf` (which is
 shipped in EESSI):
 ``` { .bash .no-copy }
 {EESSI/2025.06} $ patchelf --print-rpath hello_mpi_hdf5
@@ -671,7 +671,7 @@ module load EESSI-extend/2025.06-easybuild
 ### Using `EESSI-extend` to install a package with  EasyBuild
 
 First, we need something that we want to install. For the purposes of this tutorial we are going to use a build
-recipe (or _easyconfig_) for EasyBuild targetting the package we have been working with to date.
+recipe (or _easyconfig_) for EasyBuild targeting the package we have been working with to date.
 
 !!! warning
 
