@@ -3,7 +3,7 @@
 This tutorial introduces the **European Environment for Scientific Software Installations (EESSI)** and shows how to 
 access and use scientific software through a shared, portable software stack.
 
-A rendered version of this tutorial is available at <https://ocaisa.github.io/eessi-tutorial/>
+A rendered version of this tutorial is available at <https://eessi.io/isc26-tutorial/>
 
 ## Prerequisites
 
