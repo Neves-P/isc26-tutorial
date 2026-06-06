@@ -263,7 +263,7 @@ architecture. If we click on `Details` for one of the runs, we get taken to wher
 and the output it is generating.
 
 The run is broken down into `steps`, each of which has a name. The one we are interested in is
-`Build and test our package`, which is where we defined our build processs. While the build is running we can read the
+`Build and test our package`, which is where we defined our build process. While the build is running we can read the
 output, or we can view it after the run completes. Regardless, we note that the output is almost identical to that
 which we had when we ran the workflow ourselves. This is no more than we expect in reality, since this is what EESSI
 is supposed to deliver for us.
