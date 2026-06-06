@@ -18,7 +18,7 @@ These use cases are discussed in details in our open-access paper, available via
 
 In the rest of this tutorial we will explore aspects of these use cases:
 
-* Using EESSI as base layer for software, and installing additional software on top of EESSI using `EESSI-extend`
+* Using EESSI as base layer for software, and installing additional software on top of EESSI with and without `EESSI-extend`
 * Building user applications with EESSI, and using EESSI in Continuous Integration (CI) environments with GitHub Actions or GitLab CI
 * Discuss some advanced topics including MPI applications, GPU applications, and using other tools (such as Spack) on top of EESSI
 

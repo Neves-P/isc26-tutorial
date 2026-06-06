@@ -12,9 +12,11 @@
 into a shared repository. Each time code is added or updated, automated processes build the application and run tests
 to verify that everything still works correctly. This verification workflow is exactly the process we went through in
 the last episode:
+
 * Prepare the environment
 * Build the application
 * Make sure it works
+
 CI is about automating that workflow to ensure it is carried out whenever we make changes to our
 application...and letting us know when things go wrong!
 
@@ -271,9 +273,9 @@ will become a green tick which indicates that our CI for the commit has passed.
 
 ??? note "What would have our CI looked like in GitLab?"
 
-    There are not so many real differences with how our specific CI would have looked like in CI/CD. The core steps
-    that we need to run are the same, but the structure to get to them is different. Again an LLM is of major
-    assistance when creating our CI file.
+    There are not so many real differences with how our specific CI would have looked like in GitLab CI/CD. The core
+    steps that we need to run are the same, but the structure to get to them is different. Again an LLM is of major
+    assistance when creating our CI file for GitLab.
 
     One major practical difference is where the CI file is stored and what it is called. In the case of GitLab CI/CD,
     the workflow must be stored in a file called
