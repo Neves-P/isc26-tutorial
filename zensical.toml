@@ -46,12 +46,13 @@ Copyright &copy; 2026 The authors
 # Read more: https://zensical.org/docs/setup/navigation/
 nav = [
    { "Get started" = "index.md" },
-   { "Accessing EESSI" = "eessi-getting-access.md" },
-   { "What is EESSI?" = "eessi-introduction.md" },
-   { "How to use EESSI" = "eessi-usage.md" },
-   { "Use cases for EESSI" = "eessi-use-cases.md" },
-   { "Building on top of EESSI" = "building-on-top.md" },
-   { "Using EESSI in CI" = "eessi-in-ci.md" },
+   { "Prepared environment" = "prepared-environment.md" },
+   { "What is EESSI?" = "introduction.md" },
+   { "Accessing EESSI" = "getting-access.md" },
+   { "How to use EESSI" = "usage.md" },
+   { "Use cases for EESSI" = "use-cases.md" },
+   { "Installing on top of EESSI" = "installing-on-top.md" },
+   { "Using EESSI in CI" = "ci.md" },
    { "Advanced topics" = "advanced-topics.md" },
 ]
 

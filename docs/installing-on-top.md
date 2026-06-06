@@ -1,4 +1,4 @@
-# Building on top of EESSI
+# Installing software on top of EESSI
 
 !!! Note "Learning Objectives"
 
