@@ -51,6 +51,11 @@ page through the GitHub interface:
 
 <p align="center"><img src="img/GitHubTemplate.png" alt="EESSI CI/CD demo template repository" width="600px"/></p>
 
+!!! warning "Naming your project"
+
+    We suggest you name your project `cicd-demo` so that the name remains
+    consistent with the commands given in the rest of the tutorial.
+
 Once GitHub has created a project for you from the template, you can _clone_ the project to the local resource that
 you wish to use (your laptop, a cluster,...) by copying the relevant command from the GitHub interface:
 
