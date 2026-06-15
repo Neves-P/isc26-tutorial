@@ -4,9 +4,9 @@ Follow the instructions below to get access to a temporary virtual machine
 that you can use for the hands-on exercises during this tutorial.
 
 
-!!! note "Only available during EESSI tutorial at ISC'26"
+!!! note "Only available during EESSI tutorial at ISC 2026"
 
-    This environment is only available during the EESSI tutorial at [ISC'26](https://isc-hpc.com),
+    This environment is only available during the EESSI tutorial at [ISC 2026](https://isc-hpc.com),
     on Monday 22 June 2026.
 
     Alternatively, you can use a system where EESSI is already available, see [here](https://eessi.io/docs/systems).
@@ -20,7 +20,7 @@ that you can use for the hands-on exercises during this tutorial.
 
 !!! tip "Do not hesitate to ask for help!"
 
-    During the ISC'26 tutorial, raise your hand to ask a question or get help.
+    During the ISC 2026 tutorial, raise your hand to ask a question or get help.
 
     Afterwards, join the EESSI Slack via the "Slack channel" link on the EESSI website
     [https://eessi.io](https://eessi.io), and ask your question there.
@@ -49,7 +49,7 @@ ssh tutorial.eessi.science
 
 Browse to https://tutorial.eessi.science
 
-- Make sure to change default “Time” to 4 hours
+- Make sure to change default "Time" to 4 hours
 - Take 4 cores
 
 Alternative, use the login node for hands-on, 16 cores so should be fine to share for a small group.

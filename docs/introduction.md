@@ -109,7 +109,7 @@ We use custom architecture detection scripts
 to automatically select the best suited installations from the software stack for
 a particular host, based on its system architecture.
 
-The software layer is maintained through our [https://github.com/EESSI/software-layer](https://github.com/EESSI/software-layer) GitHub repository.
+The software layer is maintained through our [https://github.com/EESSI/software-layer-scripts](https://github.com/EESSI/software-layer) and [https://github.com/EESSI/software-layer](https://github.com/EESSI/software-layer-scripts) GitHub repositories.
 
 ## Current status
 
@@ -134,5 +134,11 @@ to start a EuroHPC Centre-of-Excellence in which EESSI could be developed furthe
 and hence the [MultiXscale](https://www.multixscale.eu/) EuroHPC Centre-of-Excellence was started. This is a 4-year
 project (2023-2026) that is a collaboration between EESSI and [CECAM](https://www.cecam.org/), with goals
 that include making EESSI ready for production, and supporting community contributions.
+
+In 2024, EESSI won the HPCwire Reader's Choice Award at SC24.
+
+EESSI is also a critical component of the 
+[EuroHPC Federation Platform (EFP)](https://my-eurohpc.eu/), underpinning the Federated Software Catalogue. The first
+release of EFP took place in April 2026.
 
 [*(back to overview page)*](index.md)
