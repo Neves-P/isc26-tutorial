@@ -16,7 +16,7 @@ jobs:
         uses: codespell-project/actions-codespell@8f01853be192eb0f849a5c7d721450e7a467c579 # v2.2
         with:
           check_filenames: true
-          skip: '.git,docs/downloads/EESSI_tutorial_slides_ISC2026.pdf'
+          skip: .git,docs/downloads/EESSI_tutorial_slides_ISC2026.pdf
           ignore_words_list: 
 
       - name: install Zensical
