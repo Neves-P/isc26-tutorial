@@ -14,6 +14,11 @@ EESSI provides a shared, portable, and optimized software stack for scientific c
 
 For those attending the live tutorial at ISC 2026, there is a [prepared environment](prepared-environment.md) available.
 
+!!! note "Slidedeck for the ISC 2026 tutorial"
+
+    The slidedeck for the tutorial given at ISC 2026 is available:
+    <a href="downloads/EESSI_tutorial_slides_ISC2026.pdf" download="EESSI_tutorial_slides_ISC2026.pdf">Download PDF</a>
+
 1. [Introduction to EESSI](introduction.md)
 2. [Getting Access to EESSI](getting-access.md)
 3. [Using EESSI](usage.md)

@@ -10,7 +10,7 @@
 EESSI is sometimes described as "container without a container runtime". What that means is that it effectively
 provides an alternative operating system to the native one without the need for something to negotiate between the two.
 When we are _consuming_ software from EESSI, there is no real way to see this. It is only when we try to use EESSI as a
-basis for building new sotware that we are exposed to the additional complexity that this can bring.
+basis for building new software that we are exposed to the additional complexity that this can bring.
 
 ## Building a software project
 
@@ -149,8 +149,8 @@ $ module spider hdf5
 We can see there are multiple versions available, but which one do we choose? Our application doesn't specify a specific
 version so we just choose the latest, `HDF5/1.14.6-gompi-2025b`, for now.The actual version of HDF5 is given by the
 first part of `1.14.6-gompi-2025b`, in this case `1.14.6`; the final part `gompi-2025b` is related to the
-[toolchain concept inside EasyBuild](https://docs.easybuild.io/common-toolchains/) and we won't get into that here
-since it is not the purpose of the tutorial.
+[toolchain concept used by EasyBuild](https://docs.easybuild.io/common-toolchains/). We won't dive into that toolchain
+concept here since it is not the purpose of the tutorial.
 
 Having chose to try out `HDF5/1.14.6-gompi-2025b`, we can now load the module to make HDF5 available:
 ``` { .bash .copy}
