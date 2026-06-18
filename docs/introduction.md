@@ -138,7 +138,7 @@ that include making EESSI ready for production, and supporting community contrib
 In 2023, the first production release of EESSI under the EESSI production repository
 [`software.eessi.io`](https://www.eessi.io/docs/repositories/software.eessi.io/) was made.
 
-In 2024, EESSI won the HPCwire Reader's Choice Award at SC24.
+In 2024, EESSI [won the HPCwire Reader's Choice Award at Supercomputing 2024](https://www.eessi.io/docs/blog/2024/11/18/hpcwire-readers-choice-awards-2024-for-eessi/).
 
 EESSI is also a critical component of the 
 [EuroHPC Federation Platform (EFP)](https://my-eurohpc.eu/), underpinning the Federated Software Catalogue. The first
