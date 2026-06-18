@@ -135,7 +135,7 @@ and hence the [MultiXscale](https://www.multixscale.eu/) EuroHPC Centre-of-Excel
 project (2023-2026) that is a collaboration between EESSI and [CECAM](https://www.cecam.org/), with goals
 that include making EESSI ready for production, and supporting community contributions.
 
-In 2024, EESSI won the HPCwire Reader's Choice Award at SC24.
+In 2024, EESSI [won the HPCwire Reader's Choice Award at Supercomputing 2024](https://www.eessi.io/docs/blog/2024/11/18/hpcwire-readers-choice-awards-2024-for-eessi/).
 
 EESSI is also a critical component of the 
 [EuroHPC Federation Platform (EFP)](https://my-eurohpc.eu/), underpinning the Federated Software Catalogue. The first

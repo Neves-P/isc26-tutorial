@@ -181,7 +181,7 @@ ls /cvmfs/software.eessi.io
 ## EESSI  via `cvmfsexec`
 
 When you do not have administrator rights, nor access to `singularity`/`apptainer`, there is still another option that
-may work for you: [`cvmfsexec`](https://github.com/cvmfs/cvmfsexec) allows you to mount cvmfs repositories
+may work for you: [`cvmfsexec`](https://github.com/cvmfs/cvmfsexec) allows you to mount CernVM-FS repositories
 as an unprivileged user.
 
 Whether this approach will work is very dependent on the specific system you have access to. If this approach is your
@@ -194,15 +194,24 @@ cd cvmfsexec
 ```
 Once inside this directory, `cvmfsexec` does still require an internet connection and some tools from your system that
 may not be available by default (but are quite common): `curl`, `rpm2cpio`, and `cpio`. If those are available then the
-see if the steps below work for you:
+see if the steps below work for you.
 
+First we gather the files that `cvmfsexec` requires (this will also tell you if your OS is supported),
+by running the `makedist` script:
 ``` { .bash .copy }
-# First we gather the files that cvmfsexec requires (this will also tell you if your OS is supported)
+# 
 ./makedist default
+```
 
-# Then we try to start cvmfsexec and see what happens
+If that worked, we can try to start `cvmfsexec` as follows,
+and see if that result in a shell environment in which EESSI is available:
+
+```
 ./cvmfsexec cvmfs-config.cern.ch software.eessi.io -- bash
 ```
+
+Here we also mount the `cvmfs-config.cern.ch` repository, which provides the necessary configuration files to CernVM-FS to be aware of EESSI.
+
 
 ---
 
