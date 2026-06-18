@@ -19,8 +19,8 @@ source /cvmfs/software.eessi.io/versions/2025.06/init/lmod/bash
 
 !!! note "What if I want a different EESSI version?"
 
-    Indeed there are a few different EESSI versions (`2023.06` and `2025.06`) and this list will grow! You can
-    always select a different EESSI after initialising by loading the appropriate module. For example, for
+    Indeed there are a few different EESSI versions (`2023.06` and `2025.06`) and this list will continue to grow! You
+    can always select a different EESSI after initialising by loading the appropriate module. For example, for
     `EESSI/2023.06` I can use the initialisation as above with the version changed, or I can use the same
     initialisation and switch the `EESSI` module afterwards:
     ``` { .bash .copy }

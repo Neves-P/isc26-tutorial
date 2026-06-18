@@ -131,9 +131,12 @@ In February 2022, an open access paper on EESSI was published (https://doi.org/1
 
 During the first half of 2022, the most active partners in the EESSI project worked together on a project proposal
 to start a EuroHPC Centre-of-Excellence in which EESSI could be developed further. The proposal was accepted,
-and hence the [MultiXscale](https://www.multixscale.eu/) EuroHPC Centre-of-Excellence was started. This is a 4-year
-project (2023-2026) that is a collaboration between EESSI and [CECAM](https://www.cecam.org/), with goals
+and hence the [MultiXscale](https://www.multixscale.eu/) EuroHPC Centre-of-Excellence was started. This was a 4-year
+project (2023-2026) forming a collaboration between EESSI and [CECAM](https://www.cecam.org/), with goals
 that include making EESSI ready for production, and supporting community contributions.
+
+In 2023, the first production release of EESSI under the EESSI production repository
+[`software.eessi.io`](https://www.eessi.io/docs/repositories/software.eessi.io/) was made.
 
 In 2024, EESSI won the HPCwire Reader's Choice Award at SC24.
 

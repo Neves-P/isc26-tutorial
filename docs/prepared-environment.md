@@ -32,7 +32,7 @@ Sign up via https://mokey.tutorial.eessi.science/auth/signup .
 Accounts will only be approved for access on the day of the tutorial,<br/>
 **so please take note of your username and password** !
 
-Note that the *“Reset password”* link does **not** work!
+Note that the *"Reset password"* link does **not** work!
 
 ## Step 2: Logging in
 
@@ -44,6 +44,7 @@ For shell access, use:
 ```
 ssh tutorial.eessi.science
 ```
+using the username and password that you created at signup.
 
 ### Via web browser
 
