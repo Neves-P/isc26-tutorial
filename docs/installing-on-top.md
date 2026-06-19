@@ -538,6 +538,7 @@ rm: remove write-protected regular file 'build/CMakeFiles/4.0.3/CMakeCCompiler.c
 -- Configuring done (13.0s)
 -- Generating done (0.0s)
 -- Build files have been written to: /home/ocaisa/EESSI/cicd-demo/build
+
 {EESSI/2025.06} ocaisa@~/EESSI/cicd-demo/build(main)$ make
 [ 25%] Building CXX object CMakeFiles/hello_mpi_hdf5.dir/main.cpp.o
 [ 50%] Linking CXX executable hello_mpi_hdf5
