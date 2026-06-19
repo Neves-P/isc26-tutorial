@@ -22,7 +22,7 @@ EESSI should work on laptops, personal workstations, HPC clusters and in the clo
 We hope to make this work for any Linux distribution, and maybe even macOS and Windows via [WSL](https://docs.microsoft.com/en-us/windows/wsl/),
 and a wide variety of CPU architectures (Intel, AMD, ARM, POWER, RISC-V).
 
-We focus not only the **performance** of the provided software installations, but also on automating the workflow
+We focus not only on the **performance** of the provided software installations, but also on automating the workflow
 for maintaining the software stack, thoroughly testing the installations, and collaborating efficiently.
 
 ## Inspiration
@@ -113,7 +113,7 @@ The software layer is maintained through our [https://github.com/EESSI/software-
 
 ## Current status
 
-The EESSI project was started mid 2020, as a loose collaboration between various Dutch universities including
+The EESSI project was started mid 2020, as a loose collaboration between various universities including
 the [University of Groningen](https://www.rug.nl/society-business/centre-for-information-technology), [VU
 Amsterdam](https://vu.nl/en), [TU Delft](https://www.tudelft.nl/en/), [TU Eindhoven](https://www.tue.nl/en/), and
 [HPC-UGent](https://www.ugent.be/hpc/en), as a follow-up of a meeting organised in Delft in early March 2020
