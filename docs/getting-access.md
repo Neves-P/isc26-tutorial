@@ -12,9 +12,10 @@ of the EESSI repository.
 ## Is EESSI accessible?
 
 EESSI can be accessed via [a native (CernVM-FS) installation](#native-installation),
-or via [a container that includes CernVM-FS](#eessi-via-a-container).
+via [a container that includes CernVM-FS](#eessi-via-a-container), or via a dedicated user-space tool called
+[`cvmfsexec`](#eessi-via-cvmfsexec).
 
-Before you look into these options, check if EESSI is already accessible on your system.
+Before you look into other options, check if EESSI is already accessible on your system.
 
 Run the following command:
 ``` { .bash .copy }
@@ -41,23 +42,20 @@ ls: /cvmfs/software.eessi.io: No such file or directory
 ```
 No worries, you don't need to be a :mage: to get access to EESSI.
 
-Continue reading about the [Native installation](#native-installation) of EESSI,
-or accessing [EESSI via a container](#eessi-via-a-container).
+Continue reading about the [Native installation](#native-installation) of EESSI, or
+accessing EESSI via a [container](#eessi-via-a-container) or via [`cvmfsexec`](#eessi-via-cvmfsexec).
 
 ## Native installation
 
 Setting up native access to EESSI, that is a system-wide deployment that does not require workarounds like
 [using a container](#eessi-via-a-container), requires the installation and configuration of [CernVM-FS](https://cernvm.cern.ch/fs).
 
-This requires **admin privileges**, since you need to install CernVM-FS as an OS package.
+This requires **administrator privileges**, since you need to install CernVM-FS as an OS package.
 
 The following actions must be taken for a (basic) native installation of EESSI:
 
 * Installing CernVM-FS itself, ideally using the OS packages provided by the CernVM-FS project
   (although installing from source is also possible);
-* Installing the EESSI configuration for CernVM-FS, which can be done by installing the ``cvmfs-config-eessi``
-  package that we provide for the most popular Linux distributions
-  (more information available [here](https://github.com/EESSI/filesystem-layer/));
 * Creating a small client configuration file for CernVM-FS (``/etc/cvmfs/default.local``);
   see also the [CernVM-FS documentation](https://cvmfs.readthedocs.io/en/stable/cpt-quickstart.html#create-default-local).
 
@@ -179,6 +177,41 @@ In this environment, you should be able to access the EESSI `software.eessi.io` 
 ``` { .bash .copy }
 ls /cvmfs/software.eessi.io
 ```
+
+## EESSI  via `cvmfsexec`
+
+When you do not have administrator rights, nor access to `singularity`/`apptainer`, there is still another option that
+may work for you: [`cvmfsexec`](https://github.com/cvmfs/cvmfsexec) allows you to mount CernVM-FS repositories
+as an unprivileged user.
+
+Whether this approach will work is very dependent on the specific system you have access to. If this approach is your
+only option, the best way to check if it will work is to try it out and see if you run into problems.
+
+The first thing you need to do is clone the `cvmfsexec` repository, and enter the directory
+``` { .bash .copy }
+git clone https://github.com/cvmfs/cvmfsexec.git
+cd cvmfsexec
+```
+Once inside this directory, `cvmfsexec` does still require an internet connection and some tools from your system that
+may not be available by default (but are quite common): `curl`, `rpm2cpio`, and `cpio`. If those are available then the
+see if the steps below work for you.
+
+First we gather the files that `cvmfsexec` requires (this will also tell you if your OS is supported),
+by running the `makedist` script:
+``` { .bash .copy }
+# 
+./makedist default
+```
+
+If that worked, we can try to start `cvmfsexec` as follows,
+and see if that result in a shell environment in which EESSI is available:
+
+```
+./cvmfsexec cvmfs-config.cern.ch software.eessi.io -- bash
+```
+
+Here we also mount the `cvmfs-config.cern.ch` repository, which provides the necessary configuration files to CernVM-FS to be aware of EESSI.
+
 
 ---
 
