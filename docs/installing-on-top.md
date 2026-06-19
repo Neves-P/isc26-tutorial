@@ -111,13 +111,13 @@ Some characteristics of the project are
     - This introduces another dependency on `CMake` itself which we only require during the building of the project.
       Such dependencies are often called _build-time dependencies_.
 - Testing
-   - `CMake` has some features that allow for the running of tests that are included in our software project. This
-     gives us an easy way to check both that our software runs, and that it gives correct results, without us needing
-     to run and verify each check manually. 
+    - `CMake` has some features that allow for the running of tests that are included in our software project. This
+      gives us an easy way to check both that our software runs, and that it gives correct results, without us needing
+      to run and verify each check manually. 
 
 ### Loading our dependencies
 
-We first need to provide our dependencies before we can build our project. We first need to ensure that EESSI is
+We first need to provide our dependencies before we can build our project. But before we can do that, we need to ensure that EESSI is
 initialised:
 ``` { .bash .copy}
 source /cvmfs/software.eessi.io/versions/2025.06/init/lmod/bash
@@ -157,12 +157,12 @@ first part of `1.14.6-gompi-2025b`, in this case `1.14.6`; the final part `gompi
 [toolchain concept used by EasyBuild](https://docs.easybuild.io/common-toolchains/). We won't dive into that toolchain
 concept here since it is not the purpose of the tutorial.
 
-Having chose to try out `HDF5/1.14.6-gompi-2025b`, we can now load the module to make HDF5 available:
+Since we chose to try out `HDF5/1.14.6-gompi-2025b`, we can now load the module to make HDF5 available:
 ``` { .bash .copy}
 module load HDF5/1.14.6-gompi-2025b
 ```
 
-After wards we can check what our environment currently looks like with
+Once HDF5 is loaded, we can check what our environment currently looks like with:
 ``` { .bash .no-copy}
 $ module list
 
@@ -177,7 +177,7 @@ Currently Loaded Modules:
   8) OpenSSL/3                           18) Perl/5.40.2-GCCcore-14.3.0
   9) libevent/2.1.12-GCCcore-14.3.0      19) HDF5/1.14.6-gompi-2025b
 ```
-That's now a long of packages which make up the _runtime dependency tree_ of `HDF5`. That dependency tree includes
+That will show a long list of packages which make up the _runtime dependency tree_ of `HDF5`. That dependency tree includes
 `OpenMPI/5.0.8-GCC-14.3.0` which means the list already satisfies the runtime requirements for our software package.
 
 However, we are still missing our _build-time dependency_ `CMake`. Can EESSI also provide that? Let's check with
@@ -222,7 +222,7 @@ We don't have any reason to choose one over the other, so let's go with the most
 module load CMake/4.0.3-GCCcore-14.3.0
 ```
 
-With this module loaded, we now have all both our build-time and runtime dependencies satisfied, and can proceed to
+With this module loaded, we now have both our build-time and runtime dependencies satisfied, and can proceed to
 build our project.
 
 ### First attempt at building and testing our project
@@ -663,7 +663,7 @@ the first place. Such issues are the reason that tools such as [EasyBuild](https
 
 In EESSI, EasyBuild is used exclusively to deliver packages in the software layer. EasyBuild has hundreds
 of configuration options though, and the shared environment of EESSI means that we need everyone to be using a
-consistent configuration of EasyBuild so that we all start from same base. There are multiple ways that one can
+consistent configuration of EasyBuild so that we all start from same the base. There are multiple ways to
 [configure EasyBuild](https://docs.easybuild.io/configuration/), one of which is by using _environment variables_.
 Since environment modules are an exact match for this case, it is convenient (and consistent with our general approach)
 to use an environment module to configure EasyBuild for use with EESSI. For the current version of EESSI that we have
@@ -690,7 +690,7 @@ recipe (or _easyconfig_) for EasyBuild targeting the package we have been workin
 
 !!! warning
 
-    The easyconfig targets the package that is under the EESSI organisation, not the one you are using locally.
+    The easyconfig targets the package that is under the EESSI organisation, not the one you are using locally (which is under your GitHub account).
 
 ```bash title="cicd-demo-0.1.0-gompi-2025b.eb"
 --8<-- "scripts/cicd-demo-0.1.0-gompi-2025b.eb"
@@ -812,7 +812,7 @@ Rank 1 wrote value 1 to file 'parallel_hello.h5'
 ### Going further with `EESSI-extend`
 
 We have seen that we use `EESSI-extend` to install an EasyBuild recipe, replicating the approach taken by EESSI itself
-when installing packages. EasyBuild has over support for almost 3000 software packages, and thousands of extensions for
+when installing packages. EasyBuild has support for almost 3000 software packages, and thousands of extensions for
 things like `R` and `Python`. If you want to explore whether EasyBuild already has support for a package you are
 interested in you can use, for example,
 ``` { .bash .copy }
