@@ -355,6 +355,15 @@ Our output is full of errors like
 ```
 What went wrong?
 
+!!! warning "`There are not enough slots available in the system to satisfy...`"
+    If you see a different error which starts with `There are not enough slots available in the system to satisfy...`
+    this is because you are trying to run an MPI job while already in a Slurm job context (perhaps an interactive
+    JupyterHub job). Our workload here is really small so we can safely tell OpenMPI that is ok to overload the CPUs:
+    ``` { .bash .copy }
+    export PRTE_MCA_rmaps_default_mapping_policy=:oversubscribe
+    ```
+    (this environment variable works with OpenMPI 5)
+
 ## Why did our build fail the tests when using EESSI?
 
 To understand where the failure is coming from, we first need to understand what actually happens when we try to run a
