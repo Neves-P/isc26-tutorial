@@ -10,8 +10,8 @@
 
 **Continuous Integration (CI)** is a software development practice where developers frequently merge their code changes
 into a shared repository. Each time code is added or updated, automated processes build the application and run tests
-to verify that everything still works correctly. This verification workflow is exactly the process we went through in
-the last episode:
+to verify that everything still works correctly. A basic verification workflow is exactly the process we went
+through in the last episode:
 
 * Prepare the environment
 * Build the application
@@ -58,7 +58,7 @@ and GitLab to make sure this is the case:
 
     The [EESSI GitLab Component](https://gitlab.com/explore/catalog/eessi/gitlab-eessi) also exists, and this allows
     you to follow a very similar approach to that described
-    here for GitHub. At the end of the episode we will provide the equivalent file needed to enable GitLab CI.
+    here for GitHub. Near the end of the episode we will provide the equivalent file needed to enable GitLab CI.
 
 The first thing we need to do is to translate our workflow into something that the workflow tool, GitHub Actions in
 this case, can understand. GitHub itself has
@@ -199,7 +199,7 @@ To github.com:vlad/cicd-demo.git
  * [new branch]      add_ci_to_project -> add_ci_to_project
 ...
 ```
-(where `vlad` is replaced by your own GitHub user handle). Let's go ahead and create the pull request lile the text
+(where `vlad` is replaced by your own GitHub user handle). Let's go ahead and create the pull request like the text
 suggested by visiting the URL. Once we open the link, we can modify the title/description if we wish, but otherwise
 we can just go ahead and click "Create pull request".
 
@@ -287,8 +287,8 @@ will become a green tick which indicates that our CI for the commit has passed.
 
 ### What happens when CI fails?
 
-What does a failure look like in CI? From the previous episode, we know that if we do not load the `buildenv` module
-our tests should fail. Let's
+What does a real failure look like in CI? From the previous episode, we know that if we do not load the `buildenv`
+module our tests should fail. Let's
 construct that scenario, by commenting out the line that loads that module:
 ```yaml title="ci.yml"
 --8<-- "scripts/ci-broken.yml"
@@ -301,7 +301,7 @@ git commit -m "Don't load buildenv, which should break our CI"
 git push origin add_ci_to_project
 ```
 
-Eventually, as expected, our CI will fail and we will get a red X beside our commit. We should also receive an email
+Eventually, as expected, our CI will fail and we will get a red `X` beside our commit. We should also receive an email
 notification that our CI has failed. Such notifications are a critical part of CI, the value of CI is not just that
 the tests run silently, but that we are made aware immediately when things go wrong.
 

@@ -6,7 +6,7 @@
     * Explore the software that EESSI has to offer
     * Run examples for some software packages included in EESSI
 
-If the EESSI repository is available, all you need to do is set up your shell environment,
+If the EESSI repository is available, all you need to do is set up your shell environment
 and you can start using the software installations that EESSI provides.
 
 ## Setting up your environment
@@ -16,6 +16,16 @@ To set up the EESSI environment, run the command:
 ``` { .bash .copy }
 source /cvmfs/software.eessi.io/versions/2025.06/init/lmod/bash
 ```
+
+!!! note "What if I want a different EESSI version?"
+
+    Indeed there are a few different EESSI versions (`2023.06` and `2025.06`) and this list will continue to grow! You
+    can always select a different EESSI after initialising by loading the appropriate module. For example, for
+    `EESSI/2023.06` I can use the initialisation as above with the version changed, or I can use the same
+    initialisation and switch the `EESSI` module afterwards:
+    ``` { .bash .copy }
+    module load EESSI/2023.06
+    ```
 
 This may take a while as data is downloaded from a Stratum 1 server which is
 part of the CernVM-FS infrastructure to distribute files. You should see the
