@@ -649,7 +649,7 @@ Total Test time (real) =   2.03 sec
 ```
 
 :tada: **Our tests now pass!** :tada: Not only that, since we ended up doing a detailed inspection of our binaries we
-have explicitly verified that the our package is using EESSI for all it's dependencies and is using the runtime loader
+have explicitly verified that our package is using EESSI for all it's dependencies and is using the runtime loader
 provided by EESSI.
 
 ## Extending EESSI using `EESSI-extend` 
