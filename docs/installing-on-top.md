@@ -355,7 +355,7 @@ Our output is full of errors like
 ```
 What went wrong?
 
-!!! warning "`There are not enough slots available in the system to satisfy...`"
+??? warning "`There are not enough slots available in the system to satisfy...`"
 
     If you see a different error which starts with `There are not enough slots available in the system to satisfy...`
     this is because you are trying to run an MPI job while already in a Slurm job context (perhaps an interactive
