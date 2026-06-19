@@ -162,7 +162,7 @@ folder structure for our CI
 
 ``` { .bash .copy }
 cd cicd-demo  # (1)!
-git checkout -b add_ci_to_project  # (2)!
+git switch -c add_ci_to_project  # (2)!
 mkdir --parents .github/workflows/  # (3)!
 ```
 
