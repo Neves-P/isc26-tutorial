@@ -37,7 +37,7 @@ follow a reasonably common workflow when it comes to building software in a new 
     [GitHub has good documentation on how to do this](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account).
     
     If you are using a cluster for this tutorial, you can create a new ssh key on the cluster and
-    register the public part of the new key on GitHub. You can do this by clicking the `New ssh key` button
+    register the public part of the new key on GitHub. You can do this by clicking the `New SSH key` button
     at the webpage <https://github.com/settings/keys>.
     
     **Always remember, an SSH key is like a digital passport,
