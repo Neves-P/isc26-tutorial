@@ -48,7 +48,7 @@ follow a reasonably common workflow when it comes to building software in a new 
     ssh -T git@github.com
     ```
     (this assumes that you are using a default name for your key, if you are not then you need to add
-    the option `-i <path to privte part of your registered key>` to the command).
+    the option `-i <path to private part of your registered key>` to the command).
 
 We have prepared a template for a demonstrator project that can be used throughout this tutorial. The first step is to
 make your instance of the project from the template, for this you need to click on the link
