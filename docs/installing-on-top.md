@@ -355,7 +355,9 @@ Our output is full of errors like
 ```
 What went wrong?
 
-??? warning "`There are not enough slots available in the system to satisfy...`"
+### Problem with MPI in Slurm job context
+
+!!! warning "`There are not enough slots available in the system to satisfy...`"
 
     If you see a different error which starts with `There are not enough slots available in the system to satisfy...`
     this is because you are trying to run an MPI job while already in a Slurm job context (perhaps an interactive
@@ -651,6 +653,20 @@ Total Test time (real) =   2.03 sec
 :tada: **Our tests now pass!** :tada: Not only that, since we ended up doing a detailed inspection of our binaries we
 have explicitly verified that our package is using EESSI for all it's dependencies and is using the runtime loader
 provided by EESSI.
+
+!!! Warning "Problem with MPI in Slurm job context"
+
+    If the tests are still failing, it's probably due to errors that include:
+    ```
+    There are not enough slots available in the system to satisfy...
+    ```
+
+    OpenMPI needs to be configured to allow oversubscription, by running:
+    ``` { .bash .copy }
+    export PRTE_MCA_rmaps_default_mapping_policy=:oversubscribe
+    ```
+
+    See also this [subsection](#problem-with-mpi-in-slurm-job-context).
 
 ## Extending EESSI using `EESSI-extend` 
 
