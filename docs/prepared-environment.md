@@ -51,6 +51,7 @@ using the username and password that you created at signup.
 Browse to https://tutorial.eessi.science
 
 - Make sure to change default "Time" to 4 hours
-- Take 4 cores
+- Take 4 cores, and increase the request memory to about 4000MB (should be plenty but more is available)
+- Switch the "User interface" to "Terminal" ("JupyterLab" also works if you are comfortable navigating that) 
 
-Alternative, use the login node for hands-on, 16 cores so should be fine to share for a small group.
+Alternatively, use the login node for hands-on, 16 cores so should be fine to share for a small group.
