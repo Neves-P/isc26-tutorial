@@ -37,10 +37,18 @@ follow a reasonably common workflow when it comes to building software in a new 
     [GitHub has good documentation on how to do this](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account).
     
     If you are using a cluster for this tutorial, you can create a new ssh key on the cluster and
-    register the public part of the new key on GitHub.
+    register the public part of the new key on GitHub. You can do this by clicking the `New ssh key` button
+    at the webpage <https://github.com/settings/keys>.
     
     **Always remember, an SSH key is like a digital passport,
     make sure to protect it by a passphrase as the location where it is stored may not be secure**.
+
+    You can verify that ssh authentication with GitHub is working by running the command
+    ```
+    ssh -T git@github.com
+    ```
+    (this assumes that you are using a default name for your key, if you are not then you need to add
+    the option `-i <path to privte part of your registered key>` to the command).
 
 We have prepared a template for a demonstrator project that can be used throughout this tutorial. The first step is to
 make your instance of the project from the template, for this you need to click on the link
