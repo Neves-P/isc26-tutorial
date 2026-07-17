@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+title: EESSI Tutorial - ISC 2026
+version: 1.0.0
+license: GPL-2.0-only
+type: software
+abstract: This tutorial introduces the European Environment for Scientific Software
+  Installations (EESSI) and shows how to access and use scientific software through
+  a shared, portable software stack. A rendered version of this tutorial is available
+  at https://eessi.io/isc26-tutorial/
+message: If you use this record, please cite it as below.
+authors:
+- given-names: Alan
+  family-names: O'Cais
+  affiliation: Ghent University
+  orcid: https://orcid.org/0000-0002-8254-8752
+- given-names: Lara
+  family-names: Peeters
+  affiliation: Ghent University
+  orcid: https://orcid.org/0009-0005-3040-9207
+- given-names: Kenneth
+  family-names: Hoste
+  affiliation: Ghent University
+  orcid: https://orcid.org/0000-0001-8034-648X
+keywords:
+- EESSI
+- HPC
+- MultiXscale
+- tutorial
+- scientific software
+- EUROHPC JU
+url: "https://www.eessi.io/isc26-tutorial/"
