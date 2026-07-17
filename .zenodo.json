@@ -1,0 +1,47 @@
+{
+  "title": "EESSI Tutorial - ISC 2026",
+  "upload_type": "event",
+  "description": "This tutorial introduces the European Environment for Scientific Software Installations (EESSI) and shows how to access and use scientific software through a shared, portable software stack. A rendered version of this tutorial is available at https://eessi.io/isc26-tutorial/",
+  "creators": [
+    {
+      "name": "O'Cais, Alan",
+      "orcid": "0000-0002-8254-8752",
+      "affiliation": "Ghent University"
+    },
+    {
+      "name": "Peeters, Lara",
+      "orcid": "0009-0005-3040-9207",
+      "affiliation": "Ghent University"
+    },
+    {
+      "name": "Hoste, Kenneth",
+      "orcid": "0000-0001-8034-648X",
+      "affiliation": "Ghent University"
+    }
+  ],
+  "access_right": "open",
+  "license": "GPL-2.0-only",
+  "language": "eng",
+  "related_identifiers": [
+      {
+          "identifier": "https://www.eessi.io/isc26-tutorial/",
+          "relation": "compiles",
+          "resource_type": "publication-softwaredocumentation"
+      }
+  ],
+  "keywords": [
+    "EESSI",
+    "HPC",
+    "MultiXscale",
+    "tutorial",
+    "scientific software",
+    "EUROHPC JU"
+  ],
+  "communities": [
+    {"identifier": "eessi"},
+    {"identifier": "multixscale"}
+  ],
+  "grants": [
+    {"id": "00k4n6c32::101093169"}
+  ]
+}
